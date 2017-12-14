@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding:utf-8 -*-
-from __future__ import absolute_import, unicode_literals
+
 
 from japanese_numbers.result import ParsedResult
 from japanese_numbers.token import Tokenized, NUMERICS
@@ -54,7 +54,7 @@ def to_arabic(val):
       numbers.append(n)
       index = token.pos if index < 0 else index
       texts.append(''.join(token.origin_char_at(x)
-                   for x in xrange(token.pos, token.pos + s)))
+                   for x in range(token.pos, token.pos + s)))
       token.next(incr=s)
 
     elif analyzing:
@@ -70,7 +70,7 @@ def to_arabic(val):
         index = token.pos
 
     if kind != NUMERIC_KIND:
-      token.next()
+      next(token)
 
   if stacks or numbers:
     _append_result()
