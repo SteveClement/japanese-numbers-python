@@ -15,11 +15,11 @@ The followings are an example patterns what can be parsed.
 
 Currently, you can install from PYPI by using pip:
 
-    pip install japanses-numbers-python
+    pip2 install japanese-numbers-python
 
 Or installing github directly:
 
-    pip install git+git://github.com/takumakanari/japanses-numbers-python.git
+    pip3 install git+git://github.com/SteveClement/japanese-numbers-python.git
 
 
 ## Usage
