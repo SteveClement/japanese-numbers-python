@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding:utf-8 -*-
 
 
@@ -46,6 +46,12 @@ class Tokenized(object):
     self.char = None
     self.pos = -1
     self.last_kind = None
+
+  def __iter__(self):
+    return self.pos <= self._size - 1
+
+  def __next__(self, incr=1):
+    return
 
   def next(self, incr=1):
     self.pos += incr

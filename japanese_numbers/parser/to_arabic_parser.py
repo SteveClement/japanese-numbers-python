@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding:utf-8 -*-
 
 
@@ -11,6 +11,7 @@ from japanese_numbers.kind import (  # noqa
   NUMERIC_KIND
 )
 
+DEBUG = True
 
 def _collect_numerics(val, pos):
   stack = []
@@ -31,8 +32,18 @@ def to_arabic(val):
                                 index=index))
 
   token = Tokenized(val)
+  if DEBUG:
+      import pprint
+      pp = pprint.PrettyPrinter(indent=4)
+      print('''Instantiating token: Tokenized({})
 
+        '''.format(val))
+      print('dir() of token: {}'.format(pp.pprint(dir(token))))
+      print('Token _size: {}'.format(token._size))
+
+  # Main loop to get all the tokens from the class
   while token.has_next():
+    # Get kind and the number of kind
     kind, num = (token.kind, token.num_of_kind)
 
     if kind == UNIT_KIND and token.last_kind != UNIT_KIND:
@@ -55,7 +66,7 @@ def to_arabic(val):
       index = token.pos if index < 0 else index
       texts.append(''.join(token.origin_char_at(x)
                    for x in range(token.pos, token.pos + s)))
-      token.next(incr=s)
+      token.next()
 
     elif analyzing:
       _append_result()
@@ -70,7 +81,7 @@ def to_arabic(val):
         index = token.pos
 
     if kind != NUMERIC_KIND:
-      next(token)
+      token.next()
 
   if stacks or numbers:
     _append_result()
