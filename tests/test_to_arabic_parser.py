@@ -45,6 +45,28 @@ class Test_to_arabic(TestCase):
     compare_result(ret[0], R(number=1, text='1', index=0))
     compare_result(ret[1], R(number=10, text='10', index=5))
 
+  def test_numeric_with_comma(self):
+    ret = to_arabic('10,000円')
+    eq_(len(ret), 1)
+    compare_result(ret[0], R(number=10000, text='10,000', index=0))
+
+    ret = to_arabic('abc, 10,000,000,円, edf, 50,000,')
+    eq_(len(ret), 2)
+    compare_result(ret[0], R(number=10000000, text='10,000,000', index=5))
+    compare_result(ret[1], R(number=50000, text='50,000', index=24))
+
+  def test_kanji_with_comma(self):
+    ret = to_arabic('二,三,四')
+    eq_(len(ret), 3)
+    compare_result(ret[0], R(number=2, text='二', index=0))
+    compare_result(ret[1], R(number=3, text='三', index=2))
+    compare_result(ret[2], R(number=4, text='四', index=4))
+
+    ret = to_arabic('テスト、二三四,十一')
+    eq_(len(ret), 2)
+    compare_result(ret[0], R(number=234, text='二三四', index=4))
+    compare_result(ret[1], R(number=11, text='十一', index=8))
+
   def test_kanji_only_10(self):
     ret = to_arabic('十一')
     eq_(len(ret), 1)

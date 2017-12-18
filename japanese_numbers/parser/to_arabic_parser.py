@@ -13,13 +13,20 @@ from japanese_numbers.kind import (  # noqa
 
 DEBUG = True
 
-def _collect_numerics(val, pos):
-  stack = []
-  for c in val[pos:]:
+def _collect_numerics(token):
+  stack, pos_size, values = ([], 0, token.val[token.pos:])
+  size = len(values)
+  for i, c in enumerate(values):
     if c not in NUMERICS:
-      break
-    stack.append(c)
-  return int(''.join(stack)), len(stack)
+      comma = c == ','
+      nc_org = token.origin_char_at(token.pos + i + 1) \
+        if i + 1 < size else None
+      if not comma or nc_org not in NUMERICS:
+        break
+    else:
+      stack.append(c)
+    pos_size += 1
+  return int(''.join(stack)), pos_size
 
 
 def to_arabic(val):
@@ -61,7 +68,7 @@ def to_arabic(val):
       numbers = []
 
     elif kind == NUMERIC_KIND:
-      n, s = _collect_numerics(token.val, token.pos)
+      n, s = _collect_numerics(token)
       numbers.append(n)
       index = token.pos if index < 0 else index
       texts.append(''.join(token.origin_char_at(x)
