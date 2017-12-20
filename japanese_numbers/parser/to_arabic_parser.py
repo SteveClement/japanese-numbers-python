@@ -11,8 +11,6 @@ from japanese_numbers.kind import (  # noqa
   NUMERIC_KIND
 )
 
-DEBUG = True
-
 def _collect_numerics(token):
   stack, pos_size, values = ([], 0, token.val[token.pos:])
   size = len(values)
@@ -34,20 +32,11 @@ def to_arabic(val):
   results = []
 
   def _append_result():
-    results.append(ParsedResult(text=''.join(texts),
-                                number=sum(stacks) + sum(numbers),
-                                index=index))
+    results.append(ParsedResult(text   = ''.join(texts),
+                                number = sum(stacks) + sum(numbers),
+                                index  = index))
 
   token = Tokenized(val)
-  if DEBUG:
-      import pprint
-      pp = pprint.PrettyPrinter(indent=4)
-      print('''Instantiating token: Tokenized({})
-
-        '''.format(val))
-      print('dir() of token: {}'.format(pp.pprint(dir(token))))
-      print('Token _size: {}'.format(token._size))
-
   # Main loop to get all the tokens from the class
   while token.has_next():
     # Get kind and the number of kind
