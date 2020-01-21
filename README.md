@@ -1,5 +1,7 @@
 # japanese_numbers
 
+[![CircleCI](https://circleci.com/gh/takumakanari/japanese-numbers-python/tree/master.svg?style=svg)](https://circleci.com/gh/takumakanari/japanese-numbers-python/tree/master)
+
 A parser for Japanese number (Kanji, arabic) in the natural language.
 
 The module **japanese_numbers** finds any numbers in the natural language, and converts to arabic numerals.
@@ -13,13 +15,7 @@ The followings are example patterns what can be parsed.
 
 ### Installation
 
-Currently, you can install from PYPI by using pip:
-
-    pip2 install japanese-numbers-python
-
-Or installing github directly, with Python3 support:
-
-    pip3 install git+git://github.com/SteveClement/japanese-numbers-python.git
+pip install japanese-numbers-python
 
 
 ## Usage
@@ -64,6 +60,16 @@ japanese_numbers.to_arabic_numbers('一を聞いて十を知る。')
 # => (1, 10)
 ```
 
+### Charsets
+
+Both `to_arabic_numbers`, `to_arabic` get `encode` option to specify encode of input.
+
+It's *utf8* by default, if you put non-unicode string into functions, it will be converted to unicode by using its encode first.
+
+```python
+japanese_numbers.to_arabic_numbers('一を聞いて十を知る。')  # utf8 by default
+japanese_numbers.to_arabic('一を聞いて十を知る。', encode='eucjp')  # set another charset
+```
 
 ### TODO
 
@@ -71,7 +77,6 @@ japanese_numbers.to_arabic_numbers('一を聞いて十を知る。')
 - support negative types
 
 
-### Patches
+### Patch
 
 Welcome!
-

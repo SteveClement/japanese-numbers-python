@@ -1,6 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- encoding:utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 
+
+from past.builtins import xrange
 
 from japanese_numbers.result import ParsedResult
 from japanese_numbers.token import Tokenized, NUMERICS
@@ -11,35 +14,37 @@ from japanese_numbers.kind import (  # noqa
   NUMERIC_KIND
 )
 
-def _collect_numerics(token):
-  stack, pos_size, values = ([], 0, token.val[token.pos:])
-  size = len(values)
-  for i, c in enumerate(values):
+
+# Compat with py3
+import sys
+
+PY3 = sys.version_info.major == 3
+if PY3:
+  unicode = str
+
+
+def _collect_numerics(val, pos):
+  stack = []
+  for c in val[pos:]:
     if c not in NUMERICS:
-      comma = c == ','
-      nc_org = token.origin_char_at(token.pos + i + 1) \
-        if i + 1 < size else None
-      if not comma or nc_org not in NUMERICS:
-        break
-    else:
-      stack.append(c)
-    pos_size += 1
-  return int(''.join(stack)), pos_size
+      break
+    stack.append(c)
+  return int(''.join(stack)), len(stack)
 
 
-def to_arabic(val):
+def to_arabic(val, encode='utf8'):
   stacks, numbers, texts, analyzing, index = ([], [], [], False, -1)
   results = []
 
   def _append_result():
-    results.append(ParsedResult(text   = ''.join(texts),
-                                number = sum(stacks) + sum(numbers),
-                                index  = index))
+    results.append(ParsedResult(text=''.join(texts),
+                                number=sum(stacks) + sum(numbers),
+                                index=index))
 
-  token = Tokenized(val)
-  # Main loop to get all the tokens from the class
+  decoded_val = val if isinstance(val, unicode) else val.decode(encode)
+  token = Tokenized(decoded_val)
+
   while token.has_next():
-    # Get kind and the number of kind
     kind, num = (token.kind, token.num_of_kind)
 
     if kind == UNIT_KIND and token.last_kind != UNIT_KIND:
@@ -57,12 +62,12 @@ def to_arabic(val):
       numbers = []
 
     elif kind == NUMERIC_KIND:
-      n, s = _collect_numerics(token)
+      n, s = _collect_numerics(token.val, token.pos)
       numbers.append(n)
       index = token.pos if index < 0 else index
       texts.append(''.join(token.origin_char_at(x)
-                   for x in range(token.pos, token.pos + s)))
-      token.next()
+                   for x in xrange(token.pos, token.pos + s)))
+      token.next(incr=s)
 
     elif analyzing:
       _append_result()
@@ -85,6 +90,6 @@ def to_arabic(val):
   return results
 
 
-def to_arabic_numbers(val):
-  return tuple(x.number for x in to_arabic(val))
+def to_arabic_numbers(val, encode='utf8'):
+  return tuple(x.number for x in to_arabic(val, encode=encode))
 

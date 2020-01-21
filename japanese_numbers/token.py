@@ -1,6 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- encoding:utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 
+from past.builtins import xrange
 
 from japanese_numbers.kind import (  # noqa
   UNIT_KIND,
@@ -27,7 +29,7 @@ NUMBERS = {  # noqa
   for x in enumerate(('一', '二', '三', '四', '五', '六', '七', '八', '九', '十'))
 }
 
-NUMERICS = list(map(str, range(0, 10)))
+NUMERICS = list(map(str, xrange(0, 10)))
 
 TRANSLATE_NUMBERS = {  # noqa
   x[1]: x[0]
@@ -46,12 +48,6 @@ class Tokenized(object):
     self.char = None
     self.pos = -1
     self.last_kind = None
-
-  def __iter__(self):
-    return self.pos <= self._size - 1
-
-  def __next__(self, incr=1):
-    return
 
   def next(self, incr=1):
     self.pos += incr
@@ -85,7 +81,7 @@ class Tokenized(object):
   @classmethod
   def _convert_kanji_to_arabic(cls, val):
     val_ = val
-    for src, dest in list(TRANSLATE_NUMBERS.items()):
+    for src, dest in TRANSLATE_NUMBERS.items():
       val_ = val_.replace(src, str(dest))
     return val_
 
