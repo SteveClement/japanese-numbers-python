@@ -14,6 +14,7 @@ from japanese_numbers.kind import (  # noqa
   NUMERIC_KIND
 )
 
+DEBUG = False
 
 # Compat with py3
 import sys
@@ -44,7 +45,17 @@ def to_arabic(val, encode='utf8'):
   decoded_val = val if isinstance(val, unicode) else val.decode(encode)
   token = Tokenized(decoded_val)
 
+  if DEBUG:
+      import pprint
+      pp = pprint.PrettyPrinter(indent=4)
+      print('''Instantiating token: Tokenized({})
+        '''.format(val))
+      print('dir() of token: {}'.format(pp.pprint(dir(token))))
+      print('Token _size: {}'.format(token._size))
+
+  # Main loop to get all the tokens from the class
   while token.has_next():
+    # Get kind and the number of kind
     kind, num = (token.kind, token.num_of_kind)
 
     if kind == UNIT_KIND and token.last_kind != UNIT_KIND:
